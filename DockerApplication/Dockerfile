@@ -1,16 +1,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /source
+WORKDIR /DockerApplication
 
 # copy csproj and restore as distinct layers
 COPY DockerApplication/*.csproj .
-RUN dotnet restore --use-current-runtime
+RUN dotnet restore
 
 # copy everything else and build app
-COPY DockerApplication/. .
-RUN dotnet publish --use-current-runtime --self-contained false --no-restore -o /app
+COPY DockerApplication .
+RUN dotnet publish -c Release -o /publish
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
-WORKDIR /app
-COPY --from=build /app ./
+WORKDIR /publish
+COPY --from=build /publish .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "DockerApplication.dll"]
