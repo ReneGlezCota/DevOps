@@ -2,11 +2,11 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
-COPY DockerApplication/*.csproj ./
+COPY DockerApplication/DockerApplication/*.csproj ./
 RUN dotnet restore
 
 # copy everything else and build app
-COPY . .
+COPY DockerApplication/. .
 RUN dotnet publish -c Release -o /publish
 
 # final stage/image
